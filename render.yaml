@@ -3,27 +3,27 @@ services:
   - type: web
     name: skill-gap-analyzer-api
     runtime: python
-    buildCommand: "./build.sh"
+    buildCommand: "pip install -r requirements.txt"
     startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: GROQ_API_KEY
-        sync: false # Set manually in dashboard
+        sync: false  # Set manually in Render dashboard
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: "3.11.0"
 
   # Frontend Static Site
   - type: web
     name: skill-gap-analyzer-web
     runtime: static
-    buildCommand: "cd client && npm install && npm run build"
-    publishDir: "client/dist"
+    buildCommand: "cd client && pnpm install && pnpm build"
+    staticPublishPath: client/out
     envVars:
-      - key: VITE_API_URL
+      - key: NEXT_PUBLIC_API_URL
         fromService:
           name: skill-gap-analyzer-api
           type: web
           property: host
-    staticPublishCustomHeaders:
-      - values:
-          - key: Cache-Control
-            value: public, max-age=0, must-revalidate
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
