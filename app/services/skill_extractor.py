@@ -10,6 +10,8 @@ from functools import lru_cache
 
 import spacy
 from spacy.tokens import Doc
+import subprocess
+import sys
 from rapidfuzz import fuzz, process
 
 from app.services.skill_taxonomy import SkillTaxonomy
@@ -177,11 +179,20 @@ class SkillExtractor:
         logger.info(f"SkillExtractor v2.2 initialized with {self.taxonomy.skill_count} skills")
     
     def _load_spacy(self) -> None:
+        model_name = "en_core_web_sm"
         try:
-            self._nlp = spacy.load("en_core_web_sm")
+            self._nlp = spacy.load(model_name)
         except OSError:
-            logger.error("SpaCy model 'en_core_web_sm' not found.")
-            raise
+            logger.info(f"SpaCy model '{model_name}' not found. Attempting to download...")
+            try:
+                subprocess.check_call([sys.executable, "-m", "spacy", "download", model_name])
+                self._nlp = spacy.load(model_name)
+                logger.info(f"Successfully downloaded and loaded '{model_name}'")
+            except Exception as e:
+                logger.error(f"Failed to download SpaCy model '{model_name}': {e}")
+                # Fallback: create a very basic NLP-like thing if spacy fails completely
+                # but for now, let it raise so we know why it failed
+                raise
 
     def extract(self, text: str) -> List[str]:
         """
