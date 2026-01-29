@@ -1,6 +1,5 @@
 # Data files
-/data/*.json
-/data/*.csv
+# (Not ignoring json/csv anymore so teammates get the database)
 
 # Qdrant vector database
 /qdrant_data/

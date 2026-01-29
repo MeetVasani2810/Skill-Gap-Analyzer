@@ -9,21 +9,29 @@ logger = logging.getLogger(__name__)
 
 class VectorDBService:
     def __init__(self, collection_name: str = "skills_jobs", persist_path: str = "./qdrant_data"):
-        # Initialize with persistent file-based storage
-        
-        # Handle stale lock files that might prevent Qdrant from starting
-        lock_file = os.path.join(persist_path, ".lock")
-        if os.path.exists(lock_file):
-            try:
-                logger.info(f"Removing stale Qdrant lock file at {lock_file}")
-                os.remove(lock_file)
-            except Exception as e:
-                logger.warning(f"Failed to remove lock file {lock_file}: {e}")
+        # Initialize Qdrant Client (Remote vs Local)
+        if settings.QDRANT_URL:
+            logger.info(f"Connecting to remote Qdrant at {settings.QDRANT_URL}")
+            self.client = QdrantClient(
+                url=settings.QDRANT_URL,
+                api_key=settings.QDRANT_API_KEY,
+            )
+        else:
+            # Local file-based storage fallback
+            # Handle stale lock files that might prevent Qdrant from starting
+            lock_file = os.path.join(persist_path, ".lock")
+            if os.path.exists(lock_file):
+                try:
+                    logger.info(f"Removing stale Qdrant lock file at {lock_file}")
+                    os.remove(lock_file)
+                except Exception as e:
+                    logger.warning(f"Failed to remove lock file {lock_file}: {e}")
 
-        self.client = QdrantClient(path=persist_path) 
+            self.client = QdrantClient(path=persist_path) 
+            logger.info(f"Initialized Qdrant client with local persistent storage at {persist_path}")
+
         self.collection_name = collection_name
         self.vector_size = 384  # Default for all-MiniLM-L6-v2
-        logger.info(f"Initialized Qdrant client with persistent storage at {persist_path}")
 
     def init_collection(self, vector_size: int = 384):
         """Create collection if it doesn't exist."""

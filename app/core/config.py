@@ -10,8 +10,11 @@ class Settings:
     
     # AI/ML Config
     EMBEDDING_MODEL: str = "all-MiniLM-L6-v2"  # Fast and efficient
+    # Qdrant Config
     QDRANT_HOST: str = os.getenv("QDRANT_HOST", "localhost")
     QDRANT_PORT: int = int(os.getenv("QDRANT_PORT", 6333))
+    QDRANT_URL: str = os.getenv("QDRANT_URL", "")  # For Qdrant Cloud
+    QDRANT_API_KEY: str = os.getenv("QDRANT_API_KEY", "") # For Qdrant Cloud
     
     # LLM Config
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")

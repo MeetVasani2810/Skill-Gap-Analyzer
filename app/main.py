@@ -36,6 +36,24 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+async def startup_event():
+    logger.info("Starting up Skill Gap Analyzer backend...")
+    
+    # Check Database
+    if not analyzer.job_db.is_available():
+        logger.warning("!!! CRITICAL: Job database (data/job_dataset.json) not found !!!")
+        logger.warning("The analyzer will fail unless GROQ_API_KEY is provided for AI fallback.")
+    
+    # Check API Key
+    if not settings.GROQ_API_KEY:
+        logger.warning("!!! WARNING: GROQ_API_KEY is not set !!!")
+        logger.warning("AI features like Learning Roadmaps and RAG Verification will be disabled.")
+    
+    if not analyzer.job_db.is_available() and not settings.GROQ_API_KEY:
+        logger.error("!!! FATAL: Neither database nor API key available. Backend logic will fail. !!!")
+
+
 # Initialize Analyzer (Loads models once)
 analyzer = GapAnalyzer()
 
