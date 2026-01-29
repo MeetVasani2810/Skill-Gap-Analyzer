@@ -5,6 +5,7 @@ import { AppPage } from "@/pages/AppPage"
 import { ResultsPage } from "@/pages/ResultsPage"
 import { AboutTechPage } from "@/pages/AboutTechPage"
 import { ThemeProvider } from "@/components/ThemeProvider"
+import "@/styles/globals.css"
 
 function App() {
   return (
