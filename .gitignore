@@ -4,6 +4,7 @@
 
 # Qdrant vector database
 /qdrant_data/
+qdrant_data/.lock
 
 # Environment
 .env
