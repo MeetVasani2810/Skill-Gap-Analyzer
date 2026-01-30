@@ -59,11 +59,32 @@ def check_port(port=8000):
             print(f" [!] Error: Port {port} is ALREADY IN USE.")
             print("     Make sure no other instance of the backend is running.")
 
+def check_spacy():
+    print("\n[*] Checking SpaCy model...")
+    try:
+        import spacy
+        if spacy.util.is_package("en_core_web_sm"):
+            print(" [v] SpaCy model 'en_core_web_sm' found.")
+        else:
+            print(" [!] Missing SpaCy model 'en_core_web_sm'.")
+            print("     Run: python -m spacy download en_core_web_sm")
+    except ImportError:
+        print(" [!] SpaCy not installed.")
+
+def check_qdrant_storage():
+    print("\n[*] Checking Qdrant storage...")
+    if Path("qdrant_data").exists():
+        print(" [v] Local qdrant_data directory found.")
+    else:
+        print(" [!] Warning: qdrant_data directory missing. It will be created on first run.")
+
 if __name__ == "__main__":
     print("=== Skill Gap Analyzer Environment Check ===\n")
     check_python_version()
     check_dependencies()
     check_env_vars()
     check_data_files()
+    check_spacy()
+    check_qdrant_storage()
     check_port()
     print("\n=== Check Complete ===")
