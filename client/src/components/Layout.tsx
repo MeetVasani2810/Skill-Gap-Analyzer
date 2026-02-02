@@ -1,8 +1,9 @@
-import { Outlet, Link, useLocation } from "react-router-dom"
-import { motion } from "framer-motion"
-import { Zap, Menu, X } from "lucide-react"
-import { useState } from "react"
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom"
+import { motion, AnimatePresence } from "framer-motion"
+import { Zap, Menu, X, LogOut, User, ChevronDown } from "lucide-react"
+import { useState, useRef, useEffect } from "react"
 import { ThemeToggle } from "@/components/ThemeToggle"
+import { useAuth } from "@/context/AuthContext"
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -12,7 +13,38 @@ const navLinks = [
 
 export function Layout() {
   const location = useLocation()
+  const navigate = useNavigate()
+  const { user, isAuthenticated, logout } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  const handleLogout = () => {
+    logout()
+    setUserMenuOpen(false)
+    navigate("/")
+  }
+
+  // Get user initials
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map(n => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background bg-grid-pattern">
@@ -54,17 +86,78 @@ export function Layout() {
               ))}
             </nav>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <ThemeToggle />
 
-              {/* CTA Button */}
-              <div className="hidden md:block">
-                <Link
-                  to="/app"
-                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-lg gradient-primary btn-glow transition-all hover:opacity-90"
-                >
-                  Analyze Resume
-                </Link>
+              {/* Auth Buttons / User Menu */}
+              <div className="hidden md:flex items-center gap-3">
+                {isAuthenticated ? (
+                  /* User Dropdown */
+                  <div className="relative" ref={userMenuRef}>
+                    <button
+                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-sm font-medium">
+                        {user?.name ? getInitials(user.name) : "U"}
+                      </div>
+                      <span className="text-sm font-medium max-w-[120px] truncate">
+                        {user?.name?.split(" ")[0] || "User"}
+                      </span>
+                      <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
+                    </button>
+
+                    <AnimatePresence>
+                      {userMenuOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-card border border-border shadow-strong overflow-hidden"
+                        >
+                          <div className="p-3 border-b border-border">
+                            <p className="text-sm font-medium truncate">{user?.name}</p>
+                            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                          </div>
+                          <div className="p-2">
+                            <Link
+                              to="/app"
+                              onClick={() => setUserMenuOpen(false)}
+                              className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-muted transition-colors"
+                            >
+                              <User className="h-4 w-4" />
+                              Analyze Resume
+                            </Link>
+                            <button
+                              onClick={handleLogout}
+                              className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-muted transition-colors text-destructive"
+                            >
+                              <LogOut className="h-4 w-4" />
+                              Sign Out
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ) : (
+                  /* Login/Signup Buttons */
+                  <>
+                    <Link
+                      to="/login"
+                      className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-lg gradient-primary btn-glow transition-all hover:opacity-90"
+                    >
+                      Sign Up Free
+                    </Link>
+                  </>
+                )}
               </div>
 
               {/* Mobile Menu Button */}
@@ -99,13 +192,45 @@ export function Layout() {
                     {link.label}
                   </Link>
                 ))}
-                <Link
-                  to="/app"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mt-2 mx-4 text-center py-2 text-sm font-medium text-white rounded-lg gradient-primary"
-                >
-                  Analyze Resume
-                </Link>
+
+                {/* Mobile Auth */}
+                <div className="mt-2 pt-2 border-t border-border">
+                  {isAuthenticated ? (
+                    <>
+                      <div className="px-4 py-2 mb-2">
+                        <p className="text-sm font-medium">{user?.name}</p>
+                        <p className="text-xs text-muted-foreground">{user?.email}</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          handleLogout()
+                          setMobileMenuOpen(false)
+                        }}
+                        className="w-full mx-4 flex items-center gap-2 px-4 py-2 text-sm font-medium text-destructive hover:bg-muted rounded-lg transition-colors"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Sign Out
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        to="/login"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        to="/signup"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block mx-4 mt-2 text-center py-2 text-sm font-medium text-white rounded-lg gradient-primary"
+                      >
+                        Sign Up Free
+                      </Link>
+                    </>
+                  )}
+                </div>
               </nav>
             </motion.div>
           )}
@@ -152,10 +277,20 @@ export function Layout() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4 text-sm">Resources</h4>
+              <h4 className="font-semibold mb-4 text-sm">Account</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="https://github.com" target="_blank" rel="noopener" className="hover:text-primary transition-colors">GitHub</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Documentation</a></li>
+                {isAuthenticated ? (
+                  <li>
+                    <button onClick={handleLogout} className="hover:text-primary transition-colors">
+                      Sign Out
+                    </button>
+                  </li>
+                ) : (
+                  <>
+                    <li><Link to="/login" className="hover:text-primary transition-colors">Login</Link></li>
+                    <li><Link to="/signup" className="hover:text-primary transition-colors">Sign Up</Link></li>
+                  </>
+                )}
               </ul>
             </div>
           </div>
