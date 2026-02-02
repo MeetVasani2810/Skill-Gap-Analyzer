@@ -3,6 +3,7 @@ torch
 sentence-transformers>=2.3.0
 fastapi>=0.109.0
 uvicorn>=0.27.0
+qdrant-client>=1.7.0
 python-multipart>=0.0.6
 pypdf>=4.0.1
 groq>=0.4.0
