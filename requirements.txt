@@ -16,3 +16,4 @@ spacy>=3.7.0
 rapidfuzz>=3.6.0
 scikit-learn>=1.4.0
 numpy>=1.26.0
+qdrant-client>=1.7.0
