@@ -10,14 +10,13 @@ import {
     TrendingUp,
     Download,
     RotateCcw,
-    ChevronDown,
     ChevronRight,
-    BookOpen,
-    ExternalLink,
     ArrowRight
 } from "lucide-react"
 import type { AnalysisResultList } from "@/lib/api"
+import { generateAnalysisPDF } from "@/lib/pdfGenerator"
 import { SkillCategoryBreakdown, type CategoryData } from "@/components/SkillCategoryBreakdown"
+import { RoadmapProgress } from "@/components/RoadmapProgress"
 
 // Tab types
 type TabType = "gap-analysis" | "comparison" | "roadmap" | "report"
@@ -32,7 +31,6 @@ export function ResultsPage() {
     const location = useLocation()
     const navigate = useNavigate()
     const [activeTab, setActiveTab] = useState<TabType>("gap-analysis")
-    const [expandedPhase, setExpandedPhase] = useState<number | null>(0)
 
     // Get data from navigation state
     const { result, targetRole, experienceLevel } = (location.state || {}) as {
@@ -126,28 +124,6 @@ export function ResultsPage() {
             gap: 1
         }
     ];
-
-    // Mock roadmap phases
-    const roadmapPhases = [
-        {
-            title: "Month 1-2: Foundations",
-            skills: result.missing_skills.slice(0, 3).map(s => s.skill),
-            difficulty: "medium",
-            hours: "40-60 hours"
-        },
-        {
-            title: "Month 3-4: Core Skills",
-            skills: result.missing_skills.slice(3, 6).map(s => s.skill),
-            difficulty: "hard",
-            hours: "60-80 hours"
-        },
-        {
-            title: "Month 5-6: Advanced Topics",
-            skills: result.missing_skills.slice(6, 9).map(s => s.skill),
-            difficulty: "hard",
-            hours: "80-100 hours"
-        }
-    ]
 
     return (
         <div className="min-h-[calc(100vh-4rem)] py-12">
@@ -382,62 +358,8 @@ export function ResultsPage() {
 
                     {/* Learning Roadmap Tab */}
                     {activeTab === "roadmap" && (
-                        <div className="max-w-3xl mx-auto space-y-4">
-                            {roadmapPhases.map((phase, i) => (
-                                <div
-                                    key={i}
-                                    className="rounded-2xl bg-card border border-border shadow-soft overflow-hidden"
-                                >
-                                    <button
-                                        onClick={() => setExpandedPhase(expandedPhase === i ? null : i)}
-                                        className="w-full p-6 flex items-center justify-between text-left hover:bg-muted/50 transition-colors"
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white ${i === 0 ? "gradient-primary" :
-                                                i === 1 ? "bg-secondary" : "bg-accent"
-                                                }`}>
-                                                {i + 1}
-                                            </div>
-                                            <div>
-                                                <h3 className="font-semibold">{phase.title}</h3>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {phase.skills.length} skills • {phase.hours}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <ChevronDown className={`h-5 w-5 transition-transform ${expandedPhase === i ? "rotate-180" : ""
-                                            }`} />
-                                    </button>
-
-                                    {expandedPhase === i && (
-                                        <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: "auto", opacity: 1 }}
-                                            className="px-6 pb-6"
-                                        >
-                                            <div className="pt-4 border-t border-border space-y-3">
-                                                {phase.skills.map((skill, j) => (
-                                                    <div
-                                                        key={j}
-                                                        className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
-                                                    >
-                                                        <div className="flex items-center gap-3">
-                                                            <BookOpen className="h-5 w-5 text-primary" />
-                                                            <span className="font-medium">{skill || `Skill ${j + 1}`}</span>
-                                                        </div>
-                                                        <a
-                                                            href="#"
-                                                            className="flex items-center gap-1 text-sm text-primary hover:underline"
-                                                        >
-                                                            Learn <ExternalLink className="h-3 w-3" />
-                                                        </a>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </div>
-                            ))}
+                        <div className="max-w-3xl mx-auto">
+                            <RoadmapProgress roadmapMarkdown={result.roadmap} />
                         </div>
                     )}
 
@@ -451,22 +373,18 @@ export function ResultsPage() {
                                         <h3 className="font-semibold text-lg">Download Full Report</h3>
                                         <p className="text-white/80 text-sm">Get a PDF summary of your analysis</p>
                                     </div>
-                                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors">
+                                    <button
+                                        onClick={() => generateAnalysisPDF(result, targetRole || 'Unknown Role', experienceLevel || 'Unknown Level')}
+                                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+                                    >
                                         <Download className="h-5 w-5" />
                                         Download PDF
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Roadmap Text */}
-                            <div className="p-6 rounded-2xl bg-card border border-border shadow-soft">
-                                <h3 className="font-semibold mb-4">Personalized Learning Roadmap</h3>
-                                <div className="prose prose-sm max-w-none text-muted-foreground">
-                                    <div className="whitespace-pre-wrap leading-relaxed">
-                                        {result.roadmap}
-                                    </div>
-                                </div>
-                            </div>
+                            {/* Interactive Roadmap */}
+                            <RoadmapProgress roadmapMarkdown={result.roadmap} />
                         </div>
                     )}
                 </motion.div>
