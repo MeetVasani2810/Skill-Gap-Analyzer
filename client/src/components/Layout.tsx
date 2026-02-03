@@ -297,11 +297,9 @@ export function Layout() {
 
           <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2025 Skill Gap Analyzer. Built for Google Hackathon 2025.
+              © 2025 Skill Gap Analyzer
             </p>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
-              <span className="text-xs font-medium gradient-text">🏆 Hackathon Project</span>
-            </div>
+
           </div>
         </div>
       </footer>
