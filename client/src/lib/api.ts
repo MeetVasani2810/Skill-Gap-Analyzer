@@ -88,3 +88,28 @@ export interface AnalysisResultList {
     target_skills_full: string[];
     roadmap: string;
 }
+
+export interface DeadlineResponse {
+    roadmap_id: string;
+    deadline: string;
+    days_remaining: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export const setDeadline = async (roadmapId: string, deadline: string): Promise<DeadlineResponse> => {
+    const response = await api.post('/roadmap/deadline', {
+        roadmap_id: roadmapId,
+        deadline: deadline
+    });
+    return response.data;
+};
+
+export const getDeadline = async (roadmapId: string): Promise<DeadlineResponse> => {
+    const response = await api.get(`/roadmap/${roadmapId}/deadline`);
+    return response.data;
+};
+
+export const deleteDeadline = async (roadmapId: string): Promise<void> => {
+    await api.delete(`/roadmap/${roadmapId}/deadline`);
+};

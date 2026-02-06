@@ -11,6 +11,7 @@ import {
     Sparkles,
     Trophy
 } from "lucide-react"
+import { DeadlineSelector } from "./DeadlineSelector"
 
 interface RoadmapStep {
     id: number
@@ -189,6 +190,9 @@ export function RoadmapProgress({ roadmapMarkdown, storageKey }: RoadmapProgress
 
     return (
         <div className="space-y-6">
+            {/* Deadline Selector */}
+            <DeadlineSelector roadmapId={key} />
+
             {/* Progress Header */}
             <div className="p-6 rounded-2xl bg-card border border-border shadow-soft">
                 <div className="flex items-center justify-between mb-4">

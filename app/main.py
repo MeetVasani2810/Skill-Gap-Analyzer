@@ -8,6 +8,7 @@ import logging
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.services.analyzer import GapAnalyzer
+from app.services.deadline_service import DeadlineService
 from app.core.config import settings
 
 # Configure logging to show application logs
@@ -56,6 +57,7 @@ async def startup_event():
 
 # Initialize Analyzer (Loads models once)
 analyzer = GapAnalyzer()
+deadline_service = DeadlineService()
 
 
 # Request Models
@@ -183,45 +185,53 @@ async def analyze_gap_lists(request: AnalysisRequest):
         
         # 3. PHASE 2 & 3: Semantic + RAG for remaining skills
         if needs_semantic:
-            # Encode all resume skills
-            resume_embeddings = analyzer.embedder.encode(list(resume_lower.values()))
-            
-            # Create a lookup for quick matching
-            resume_skills_list = list(resume_lower.values())
-            
             borderline_cases = []
             
-            for target in needs_semantic:
-                # Get embedding for target skill
-                target_emb = analyzer.embedder.encode([target])[0]
-                
-                # Calculate similarity with all resume skills
-                from sklearn.metrics.pairwise import cosine_similarity
-                import numpy as np
-                
-                similarities = cosine_similarity([target_emb], resume_embeddings)[0]
-                best_idx = np.argmax(similarities)
-                best_score = similarities[best_idx]
-                best_match = resume_skills_list[best_idx]
-                
-                if best_score >= 0.7:
-                    # HIGH CONFIDENCE: Semantic match
-                    covered_skills.append({
-                        "skill": target,
-                        "status": "covered",
-                        "match_type": "semantic",
-                        "matched_with": best_match,
-                        "confidence": round(float(best_score), 2)
-                    })
-                elif best_score >= 0.3:
-                    # BORDERLINE: Needs RAG verification
-                    borderline_cases.append((target, best_match, best_score))
-                else:
-                    # LOW: Definitely missing
+            # Check if we have any resume skills to compare against
+            if not resume_lower:
+                for target in needs_semantic:
                     missing_skills.append({
                         "skill": target,
                         "status": "missing"
                     })
+            else:
+                # Encode all resume skills
+                resume_embeddings = analyzer.embedder.encode(list(resume_lower.values()))
+                
+                # Create a lookup for quick matching
+                resume_skills_list = list(resume_lower.values())
+                
+                for target in needs_semantic:
+                    # Get embedding for target skill
+                    target_emb = analyzer.embedder.encode([target])[0]
+                    
+                    # Calculate similarity with all resume skills
+                    from sklearn.metrics.pairwise import cosine_similarity
+                    import numpy as np
+                    
+                    similarities = cosine_similarity([target_emb], resume_embeddings)[0]
+                    best_idx = np.argmax(similarities)
+                    best_score = similarities[best_idx]
+                    best_match = resume_skills_list[best_idx]
+                    
+                    if best_score >= 0.7:
+                        # HIGH CONFIDENCE: Semantic match
+                        covered_skills.append({
+                            "skill": target,
+                            "status": "covered",
+                            "match_type": "semantic",
+                            "matched_with": best_match,
+                            "confidence": round(float(best_score), 2)
+                        })
+                    elif best_score >= 0.3:
+                        # BORDERLINE: Needs RAG verification
+                        borderline_cases.append((target, best_match, best_score))
+                    else:
+                        # LOW: Definitely missing
+                        missing_skills.append({
+                            "skill": target,
+                            "status": "missing"
+                        })
             
             semantic_matches = len(covered_skills) - exact_matches
             logger.info(f"Phase 2 - Semantic matches: {semantic_matches}")
@@ -293,6 +303,59 @@ async def generate_jd(request: RoleRequest):
         return {"job_description": jd_text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
+# Use Pydantic models to validate that the date is in the future and in ISO format (YYYY-MM-DD)
+class DeadlineRequest(BaseModel):
+    roadmap_id: str
+    deadline: str  # YYYY-MM-DD
+
+    @staticmethod
+    def validate_future_date(date_str: str):
+        try:
+            from datetime import datetime
+            d = datetime.strptime(date_str, "%Y-%m-%d")
+            if d.date() < datetime.now().date():
+                raise ValueError("Deadline must be in the future")
+        except ValueError as e:
+            raise ValueError("Invalid date format or past date")
+
+
+@app.post("/api/v1/roadmap/deadline")
+async def set_deadline(request: DeadlineRequest):
+    try:
+        # Validate date
+        try:
+            from datetime import datetime
+            dt = datetime.strptime(request.deadline, "%Y-%m-%d")
+            if dt.date() < datetime.now().date():
+                raise HTTPException(status_code=400, detail="Deadline must be in the future")
+        except ValueError:
+             raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
+
+        result = deadline_service.set_deadline(request.roadmap_id, request.deadline)
+        return result
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/v1/roadmap/{roadmap_id}/deadline")
+async def get_deadline(roadmap_id: str):
+    result = deadline_service.get_deadline(roadmap_id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Deadline not found")
+    return result
+
+
+@app.delete("/api/v1/roadmap/{roadmap_id}/deadline")
+async def delete_deadline(roadmap_id: str):
+    success = deadline_service.delete_deadline(roadmap_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Deadline not found")
+    return {"status": "success", "message": "Deadline removed"}
 
 
 if __name__ == "__main__":
