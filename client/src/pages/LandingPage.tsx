@@ -16,6 +16,7 @@ import {
     Sparkles
 } from "lucide-react"
 import { useState } from "react"
+import { InteractiveHeroButton } from "@/components/InteractiveHeroButton"
 
 // Animation variants
 const fadeInUp: Variants = {
@@ -106,21 +107,18 @@ function HeroSection() {
                         variants={fadeInUp}
                         className="flex flex-col sm:flex-row gap-4 justify-center"
                     >
-                        <Link
-                            to="/app"
-                            className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold text-white rounded-xl gradient-primary btn-glow shadow-strong transition-all hover:scale-105"
-                        >
-                            Analyze My Resume
-                            <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                        <Link to="/app">
+                            <InteractiveHeroButton variant="primary">
+                                Analyze My Resume
+                                <ArrowRight className="h-5 w-5" />
+                            </InteractiveHeroButton>
                         </Link>
-                        <a
-                            href="#demo"
-                            className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl border-2 border-border hover:border-primary hover:text-primary transition-colors"
-                        >
+                        <InteractiveHeroButton variant="outline" href="#demo">
                             <Play className="h-5 w-5" />
                             Try Live Demo
-                        </a>
+                        </InteractiveHeroButton>
                     </motion.div>
+
 
                     {/* Trust Indicators */}
                     <motion.div
@@ -250,12 +248,11 @@ function InteractiveDemo() {
                         </div>
 
                         {/* Run Demo Button */}
-                        <button
-                            onClick={handleRunDemo}
-                            className="w-full py-4 rounded-xl text-white font-semibold gradient-primary btn-glow transition-all hover:scale-[1.02] mb-6"
-                        >
-                            Run Demo Analysis
-                        </button>
+                        <div className="mb-6">
+                            <InteractiveHeroButton variant="primary" size="md" fullWidth onClick={handleRunDemo}>
+                                Run Demo Analysis
+                            </InteractiveHeroButton>
+                        </div>
 
                         {/* Results Preview */}
                         {showResults && (
@@ -511,12 +508,11 @@ function TargetAudience() {
                     variants={fadeInUp}
                     className="text-center mt-16"
                 >
-                    <Link
-                        to="/app"
-                        className="inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold text-white rounded-xl gradient-primary btn-glow shadow-strong transition-all hover:scale-105"
-                    >
-                        Get Started Free
-                        <ArrowRight className="h-5 w-5" />
+                    <Link to="/app">
+                        <InteractiveHeroButton variant="primary">
+                            Get Started Free
+                            <ArrowRight className="h-5 w-5" />
+                        </InteractiveHeroButton>
                     </Link>
                 </motion.div>
             </div>

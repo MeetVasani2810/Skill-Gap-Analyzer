@@ -201,6 +201,149 @@ body {
 }
 
 /* ========================================
+   INTERACTIVE HERO BUTTONS
+   ======================================== */
+.hero-btn-interactive {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  isolation: isolate;
+}
+
+/* ── Primary variant ── */
+.hero-btn-primary {
+  color: #fff;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* Animated gradient that shifts blue↔purple */
+.hero-btn-gradient {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(135deg, #3B82F6 0%, #7C3AED 33%, #8B5CF6 66%, #3B82F6 100%);
+  background-size: 300% 300%;
+  animation: hero-gradient-shift 3.5s ease infinite;
+}
+
+@keyframes hero-gradient-shift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+/* ── Outline variant ── */
+.hero-btn-outline {
+  border: 2px solid var(--color-border);
+  transition: border-color 200ms ease, color 200ms ease;
+}
+.hero-btn-outline:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ── Neon glow layer ── */
+.hero-btn-glow {
+  position: absolute;
+  inset: -3px;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+.hero-btn-primary .hero-btn-glow {
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  filter: blur(14px);
+}
+.hero-btn-outline .hero-btn-glow {
+  background: var(--color-primary);
+  filter: blur(12px);
+}
+.hero-btn-glow--active {
+  opacity: 0.45;
+}
+.hero-btn-primary .hero-btn-glow--active {
+  opacity: 0.55;
+}
+
+/* ── Bubbles ── */
+.hero-btn-bubble {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+.hero-btn-primary .hero-btn-bubble {
+  background: rgba(255, 255, 255, 0.5);
+}
+.hero-btn-outline .hero-btn-bubble {
+  background: rgba(59, 130, 246, 0.45);
+}
+
+/* ── Ripple ── */
+.hero-btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+.hero-btn-ripple--primary {
+  background: rgba(255, 255, 255, 0.25);
+}
+.hero-btn-ripple--outline {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+/* ── Content z-index ── */
+.hero-btn-content {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ── Size variants ── */
+.hero-btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+}
+.hero-btn-md {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 0.625rem;
+}
+.hero-btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  border-radius: 0.75rem;
+}
+
+/* ── Full width ── */
+.hero-btn-full {
+  width: 100%;
+}
+
+/* ── Disabled ── */
+.hero-btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ========================================
    ANIMATIONS
    ======================================== */
 @keyframes shimmer {

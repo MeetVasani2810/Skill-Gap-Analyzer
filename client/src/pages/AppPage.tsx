@@ -14,6 +14,7 @@ import {
     Sparkles
 } from "lucide-react"
 import { extractResumeData, analyzeGapLists } from "@/lib/api"
+import { InteractiveHeroButton } from "@/components/InteractiveHeroButton"
 
 // Common roles for dropdown
 const TARGET_ROLES = [
@@ -330,22 +331,23 @@ export function AppPage() {
 
                                 {/* Actions */}
                                 <div className="flex gap-4">
-                                    <button
-                                        onClick={() => setStep(1)}
-                                        className="flex items-center gap-2 px-6 py-3 rounded-xl border border-border hover:bg-muted transition-colors"
-                                    >
+                                    <InteractiveHeroButton variant="outline" size="md" onClick={() => setStep(1)}>
                                         <ChevronLeft className="h-5 w-5" />
                                         Back
-                                    </button>
-                                    <button
-                                        onClick={handleAnalyze}
-                                        disabled={!targetRole}
-                                        className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-white font-semibold gradient-primary btn-glow transition-all hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
-                                    >
-                                        <Sparkles className="h-5 w-5" />
-                                        Analyze Skills
-                                        <ChevronRight className="h-5 w-5" />
-                                    </button>
+                                    </InteractiveHeroButton>
+                                    <div className="flex-1">
+                                        <InteractiveHeroButton
+                                            variant="primary"
+                                            size="md"
+                                            fullWidth
+                                            onClick={handleAnalyze}
+                                            disabled={!targetRole}
+                                        >
+                                            <Sparkles className="h-5 w-5" />
+                                            Analyze Skills
+                                            <ChevronRight className="h-5 w-5" />
+                                        </InteractiveHeroButton>
+                                    </div>
                                 </div>
                             </motion.div>
                         )}

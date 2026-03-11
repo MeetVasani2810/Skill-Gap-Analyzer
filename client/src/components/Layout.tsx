@@ -4,6 +4,7 @@ import { Zap, Menu, X, LogOut, User, ChevronDown } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { useAuth } from "@/context/AuthContext"
+import { InteractiveHeroButton } from "@/components/InteractiveHeroButton"
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -150,11 +151,10 @@ export function Layout() {
                     >
                       Login
                     </Link>
-                    <Link
-                      to="/signup"
-                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-lg gradient-primary btn-glow transition-all hover:opacity-90"
-                    >
-                      Sign Up Free
+                    <Link to="/signup">
+                      <InteractiveHeroButton variant="primary" size="sm">
+                        Sign Up Free
+                      </InteractiveHeroButton>
                     </Link>
                   </>
                 )}

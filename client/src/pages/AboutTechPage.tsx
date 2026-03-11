@@ -17,6 +17,7 @@ import {
 import { Link } from "react-router-dom"
 import { NLPFlowDiagram } from "@/components/NLPFlowDiagram"
 import { CompetitiveComparison } from "@/components/CompetitiveComparison"
+import { InteractiveHeroButton } from "@/components/InteractiveHeroButton"
 
 // Animation variants
 const fadeInUp: Variants = {
@@ -432,15 +433,10 @@ function VerificationSection() {
                     <CompetitiveComparison />
 
                     <div className="flex justify-center mt-12">
-                        <a
-                            href="https://github.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-border hover:bg-muted transition-colors"
-                        >
+                        <InteractiveHeroButton variant="outline" size="md" href="https://github.com">
                             View Source on GitHub
                             <ExternalLink className="h-4 w-4" />
-                        </a>
+                        </InteractiveHeroButton>
                     </div>
                 </motion.div>
 
@@ -452,12 +448,11 @@ function VerificationSection() {
                     variants={fadeInUp}
                     className="text-center mt-16"
                 >
-                    <Link
-                        to="/app"
-                        className="inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold text-white rounded-xl gradient-primary btn-glow shadow-strong transition-all hover:scale-105"
-                    >
-                        Try It Yourself
-                        <ArrowRight className="h-5 w-5" />
+                    <Link to="/app">
+                        <InteractiveHeroButton variant="primary">
+                            Try It Yourself
+                            <ArrowRight className="h-5 w-5" />
+                        </InteractiveHeroButton>
                     </Link>
                 </motion.div>
             </div>

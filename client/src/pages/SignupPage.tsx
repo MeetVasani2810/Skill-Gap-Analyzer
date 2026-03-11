@@ -14,6 +14,7 @@ import {
     CheckCircle2
 } from "lucide-react"
 import { useAuth } from "@/context/AuthContext"
+import { InteractiveHeroButton } from "@/components/InteractiveHeroButton"
 
 export function SignupPage() {
     const navigate = useNavigate()
@@ -222,23 +223,30 @@ export function SignupPage() {
                         </div>
 
                         {/* Submit Button */}
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className="w-full py-3 rounded-xl text-white font-semibold gradient-primary btn-glow transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6"
-                        >
-                            {isLoading ? (
-                                <>
-                                    <Loader2 className="h-5 w-5 animate-spin" />
-                                    Creating account...
-                                </>
-                            ) : (
-                                <>
-                                    Create Account
-                                    <ArrowRight className="h-5 w-5" />
-                                </>
-                            )}
-                        </button>
+                        <div className="mt-6">
+                            <InteractiveHeroButton
+                                variant="primary"
+                                size="md"
+                                fullWidth
+                                disabled={isLoading}
+                                onClick={() => {
+                                    const form = document.querySelector('form')
+                                    if (form) form.requestSubmit()
+                                }}
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="h-5 w-5 animate-spin" />
+                                        Creating account...
+                                    </>
+                                ) : (
+                                    <>
+                                        Create Account
+                                        <ArrowRight className="h-5 w-5" />
+                                    </>
+                                )}
+                            </InteractiveHeroButton>
+                        </div>
                     </form>
 
                     {/* Divider */}

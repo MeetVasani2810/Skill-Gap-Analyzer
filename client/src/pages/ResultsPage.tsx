@@ -17,6 +17,7 @@ import type { AnalysisResultList } from "@/lib/api"
 import { generateAnalysisPDF } from "@/lib/pdfGenerator"
 import { SkillCategoryBreakdown, type CategoryData } from "@/components/SkillCategoryBreakdown"
 import { RoadmapProgress } from "@/components/RoadmapProgress"
+import { InteractiveHeroButton } from "@/components/InteractiveHeroButton"
 
 // Tab types
 type TabType = "gap-analysis" | "comparison" | "roadmap" | "report"
@@ -57,12 +58,11 @@ export function ResultsPage() {
                 <div className="text-center">
                     <h2 className="text-2xl font-bold mb-4">No Analysis Results</h2>
                     <p className="text-muted-foreground mb-6">Please upload a resume first to get your analysis.</p>
-                    <Link
-                        to="/app"
-                        className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl gradient-primary"
-                    >
-                        Start Analysis
-                        <ArrowRight className="h-4 w-4" />
+                    <Link to="/app">
+                        <InteractiveHeroButton variant="primary" size="md">
+                            Start Analysis
+                            <ArrowRight className="h-4 w-4" />
+                        </InteractiveHeroButton>
                     </Link>
                 </div>
             </div>
@@ -396,19 +396,15 @@ export function ResultsPage() {
                     variants={fadeIn}
                     className="flex justify-center gap-4 mt-12"
                 >
-                    <button
-                        onClick={() => navigate("/app")}
-                        className="flex items-center gap-2 px-6 py-3 rounded-xl border border-border hover:bg-muted transition-colors"
-                    >
+                    <InteractiveHeroButton variant="outline" size="md" onClick={() => navigate("/app")}>
                         <RotateCcw className="h-5 w-5" />
                         Analyze Another Role
-                    </button>
-                    <Link
-                        to="/about"
-                        className="flex items-center gap-2 px-6 py-3 rounded-xl bg-muted hover:bg-muted/80 transition-colors"
-                    >
-                        Learn About Our Tech
-                        <ChevronRight className="h-5 w-5" />
+                    </InteractiveHeroButton>
+                    <Link to="/about">
+                        <InteractiveHeroButton variant="outline" size="md">
+                            Learn About Our Tech
+                            <ChevronRight className="h-5 w-5" />
+                        </InteractiveHeroButton>
                     </Link>
                 </motion.div>
             </div>

@@ -12,6 +12,7 @@ import {
     Loader2
 } from "lucide-react"
 import { useAuth } from "@/context/AuthContext"
+import { InteractiveHeroButton } from "@/components/InteractiveHeroButton"
 
 export function LoginPage() {
     const navigate = useNavigate()
@@ -134,10 +135,15 @@ export function LoginPage() {
                         </div>
 
                         {/* Submit Button */}
-                        <button
-                            type="submit"
+                        <InteractiveHeroButton
+                            variant="primary"
+                            size="md"
+                            fullWidth
                             disabled={isLoading}
-                            className="w-full py-3 rounded-xl text-white font-semibold gradient-primary btn-glow transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            onClick={() => {
+                                const form = document.querySelector('form')
+                                if (form) form.requestSubmit()
+                            }}
                         >
                             {isLoading ? (
                                 <>
@@ -150,7 +156,7 @@ export function LoginPage() {
                                     <ArrowRight className="h-5 w-5" />
                                 </>
                             )}
-                        </button>
+                        </InteractiveHeroButton>
                     </form>
 
                     {/* Divider */}
