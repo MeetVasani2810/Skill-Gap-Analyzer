@@ -5,10 +5,11 @@ from typing import Optional
 
 import json
 import logging
-from fastapi.middleware.cors import CORSMiddleware
 
 from app.services.analyzer import GapAnalyzer
 from app.services.deadline_service import DeadlineService
+from app.services.database import connect_db, close_db
+from app.routes.auth import router as auth_router
 from app.core.config import settings
 
 # Configure logging to show application logs
@@ -37,9 +38,16 @@ app.add_middleware(
 )
 
 
+# Include auth routes
+app.include_router(auth_router, prefix=settings.API_V1_STR)
+
+
 @app.on_event("startup")
 async def startup_event():
     logger.info("Starting up Skill Gap Analyzer backend...")
+    
+    # Connect to MongoDB
+    connect_db()
     
     # Check Database
     if not analyzer.job_db.is_available():
@@ -53,6 +61,12 @@ async def startup_event():
     
     if not analyzer.job_db.is_available() and not settings.GROQ_API_KEY:
         logger.error("!!! FATAL: Neither database nor API key available. Backend logic will fail. !!!")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    logger.info("Shutting down Skill Gap Analyzer backend...")
+    close_db()
 
 
 # Initialize Analyzer (Loads models once)
