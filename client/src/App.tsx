@@ -5,7 +5,7 @@ import { AppPage } from "@/pages/AppPage"
 import { ResultsPage } from "@/pages/ResultsPage"
 import { AboutTechPage } from "@/pages/AboutTechPage"
 import { LoginPage } from "@/pages/LoginPage"
-import { SignupPage } from "@/pages/SignupPage"
+import { AuthCallbackPage } from "@/pages/AuthCallbackPage"
 import { ThemeProvider } from "@/components/ThemeProvider"
 import { AuthProvider } from "@/context/AuthContext"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
@@ -21,8 +21,10 @@ function App() {
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />
               <Route path="/about" element={<AboutTechPage />} />
+
+              {/* OAuth Callback */}
+              <Route path="/auth/callback" element={<AuthCallbackPage />} />
 
               {/* Protected Routes - Require Authentication */}
               <Route path="/app" element={

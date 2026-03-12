@@ -31,8 +31,8 @@ export function Layout() {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     setUserMenuOpen(false)
     navigate("/")
   }
@@ -99,9 +99,18 @@ export function Layout() {
                       onClick={() => setUserMenuOpen(!userMenuOpen)}
                       className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors"
                     >
-                      <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-sm font-medium">
-                        {user?.name ? getInitials(user.name) : "U"}
-                      </div>
+                      {user?.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt={user.name}
+                          className="w-8 h-8 rounded-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-sm font-medium">
+                          {user?.name ? getInitials(user.name) : "U"}
+                        </div>
+                      )}
                       <span className="text-sm font-medium max-w-[120px] truncate">
                         {user?.name?.split(" ")[0] || "User"}
                       </span>
@@ -117,9 +126,23 @@ export function Layout() {
                           transition={{ duration: 0.15 }}
                           className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-card border border-border shadow-strong overflow-hidden"
                         >
-                          <div className="p-3 border-b border-border">
-                            <p className="text-sm font-medium truncate">{user?.name}</p>
-                            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                          <div className="p-3 border-b border-border flex items-center gap-3">
+                            {user?.avatar ? (
+                              <img
+                                src={user.avatar}
+                                alt={user.name}
+                                className="w-10 h-10 rounded-full object-cover"
+                                referrerPolicy="no-referrer"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center text-white text-sm font-medium">
+                                {user?.name ? getInitials(user.name) : "U"}
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium truncate">{user?.name}</p>
+                              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                            </div>
                           </div>
                           <div className="p-2">
                             <Link
@@ -143,20 +166,12 @@ export function Layout() {
                     </AnimatePresence>
                   </div>
                 ) : (
-                  /* Login/Signup Buttons */
-                  <>
-                    <Link
-                      to="/login"
-                      className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      Login
-                    </Link>
-                    <Link to="/signup">
-                      <InteractiveHeroButton variant="primary" size="sm">
-                        Sign Up Free
-                      </InteractiveHeroButton>
-                    </Link>
-                  </>
+                  /* Sign In Button */
+                  <Link to="/login">
+                    <InteractiveHeroButton variant="primary" size="sm">
+                      Sign In
+                    </InteractiveHeroButton>
+                  </Link>
                 )}
               </div>
 
@@ -197,9 +212,23 @@ export function Layout() {
                 <div className="mt-2 pt-2 border-t border-border">
                   {isAuthenticated ? (
                     <>
-                      <div className="px-4 py-2 mb-2">
-                        <p className="text-sm font-medium">{user?.name}</p>
-                        <p className="text-xs text-muted-foreground">{user?.email}</p>
+                      <div className="px-4 py-2 mb-2 flex items-center gap-3">
+                        {user?.avatar ? (
+                          <img
+                            src={user.avatar}
+                            alt={user.name}
+                            className="w-8 h-8 rounded-full object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-medium">
+                            {user?.name ? getInitials(user.name) : "U"}
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-medium">{user?.name}</p>
+                          <p className="text-xs text-muted-foreground">{user?.email}</p>
+                        </div>
                       </div>
                       <button
                         onClick={() => {
@@ -213,22 +242,13 @@ export function Layout() {
                       </button>
                     </>
                   ) : (
-                    <>
-                      <Link
-                        to="/login"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        Login
-                      </Link>
-                      <Link
-                        to="/signup"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block mx-4 mt-2 text-center py-2 text-sm font-medium text-white rounded-lg gradient-primary"
-                      >
-                        Sign Up Free
-                      </Link>
-                    </>
+                    <Link
+                      to="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block mx-4 mt-2 text-center py-2 text-sm font-medium text-white rounded-lg gradient-primary"
+                    >
+                      Sign In
+                    </Link>
                   )}
                 </div>
               </nav>
@@ -286,10 +306,7 @@ export function Layout() {
                     </button>
                   </li>
                 ) : (
-                  <>
-                    <li><Link to="/login" className="hover:text-primary transition-colors">Login</Link></li>
-                    <li><Link to="/signup" className="hover:text-primary transition-colors">Sign Up</Link></li>
-                  </>
+                  <li><Link to="/login" className="hover:text-primary transition-colors">Sign In</Link></li>
                 )}
               </ul>
             </div>
