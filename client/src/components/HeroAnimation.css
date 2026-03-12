@@ -1,0 +1,406 @@
+/* ========================================
+   HERO ANIMATION — CORE CONTAINER
+   ======================================== */
+.hero-anim {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, hsl(222 47% 8%) 0%, hsl(230 40% 12%) 50%, hsl(222 47% 8%) 100%);
+  border-radius: 1rem;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #e2e8f0;
+}
+
+/* Subtle grid overlay */
+.hero-anim::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(59, 130, 246, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-anim-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================
+   PARTICLE CANVAS
+   ======================================== */
+.hero-anim-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ========================================
+   STEP INDICATOR BAR
+   ======================================== */
+.hero-anim-steps {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.hero-anim-step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.25);
+  transition: all 0.35s ease;
+}
+
+.hero-anim-step-dot--active {
+  background: #3B82F6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+  transform: scale(1.4);
+}
+
+.hero-anim-step-dot--done {
+  background: rgba(59, 130, 246, 0.45);
+}
+
+/* Step label */
+.hero-anim-step-label {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: rgba(148, 163, 184, 0.6);
+  white-space: nowrap;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  z-index: 10;
+}
+
+/* ========================================
+   STAGE PANEL — shared wrapper
+   ======================================== */
+.hero-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.hero-stage-hint {
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.5);
+  letter-spacing: 0.04em;
+}
+
+/* ========================================
+   STEP 1 — RESUME UPLOAD
+   ======================================== */
+.upload-zone {
+  width: 260px;
+  max-width: 75%;
+  padding: 1.75rem 1.5rem;
+  border: 2px dashed rgba(59, 130, 246, 0.35);
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.5s ease;
+  background: rgba(59, 130, 246, 0.03);
+}
+
+.upload-zone--active {
+  border-color: #10B981;
+  background: rgba(16, 185, 129, 0.07);
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.18), inset 0 0 20px rgba(16, 185, 129, 0.05);
+}
+
+.upload-zone-text {
+  font-size: 0.85rem;
+  color: rgba(148, 163, 184, 0.5);
+}
+
+.upload-success {
+  color: #10B981;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* PDF icon */
+.pdf-icon {
+  width: 52px;
+  height: 62px;
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  position: relative;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+}
+
+.pdf-icon::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.15);
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  border-radius: 0 8px 0 0;
+}
+
+/* ========================================
+   STEP 2 — AI SCANNING
+   ======================================== */
+.resume-card {
+  width: 200px;
+  max-width: 60%;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.resume-card--wide {
+  width: 240px;
+  max-width: 65%;
+  padding: 1.25rem;
+}
+
+.resume-card--mini {
+  width: 140px;
+  max-width: 45%;
+  padding: 0.75rem;
+}
+
+.resume-card-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.resume-line {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.resume-line:nth-child(1) { width: 80%; }
+.resume-line:nth-child(2) { width: 55%; }
+.resume-line:nth-child(3) { width: 90%; }
+.resume-line:nth-child(4) { width: 40%; }
+.resume-line:nth-child(5) { width: 70%; }
+.resume-line:nth-child(6) { width: 60%; }
+
+/* Scan line */
+.scan-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #3B82F6 25%, #8B5CF6 75%, transparent 100%);
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.6), 0 0 40px rgba(139, 92, 246, 0.25);
+  animation: scanDown 1.8s ease-in-out infinite;
+  z-index: 2;
+}
+
+@keyframes scanDown {
+  0%   { top: 0;    opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Skill tags */
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.skill-tags--spread {
+  gap: 10px;
+}
+
+.skill-tag {
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: rgba(59, 130, 246, 0.12);
+  color: #60A5FA;
+  border: 1px solid rgba(59, 130, 246, 0.28);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.12);
+}
+
+/* ========================================
+   STEP 4 — SKILL COMPARISON
+   ======================================== */
+.comparison-panels {
+  display: flex;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 440px;
+}
+
+.comparison-panel {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.comparison-panel-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.6rem;
+  color: rgba(148, 163, 184, 0.65);
+}
+
+.comparison-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.75rem;
+  padding: 4px 0;
+}
+
+.comparison-check {
+  color: #10B981;
+  font-weight: 700;
+}
+
+.comparison-cross {
+  color: #EF4444;
+  font-weight: 700;
+}
+
+/* ========================================
+   STEP 5 — GAP DETECTION
+   ======================================== */
+.gap-card {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.08);
+  max-width: 270px;
+  width: 75%;
+}
+
+.gap-card-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #F87171;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gap-skill {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(239, 68, 68, 0.1);
+  color: #FCA5A5;
+  margin: 4px 0;
+  border-left: 2px solid #EF4444;
+}
+
+/* ========================================
+   STEP 6 — AI ROADMAP
+   ======================================== */
+.roadmap-card {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: rgba(59, 130, 246, 0.06);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  box-shadow: 0 0 35px rgba(59, 130, 246, 0.08);
+  max-width: 270px;
+  width: 75%;
+  text-align: left;
+}
+
+.roadmap-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #60A5FA;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.roadmap-item {
+  font-size: 0.75rem;
+  color: #93C5FD;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.08);
+}
+
+.roadmap-item:last-child {
+  border-bottom: none;
+}
+
+/* Typing cursor */
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.85em;
+  background: #60A5FA;
+  margin-left: 3px;
+  animation: blink 0.7s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+/* ========================================
+   CONNECTOR LABEL
+   ======================================== */
+.hero-anim-connector {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  color: rgba(59, 130, 246, 0.4);
+  letter-spacing: 0.15em;
+  z-index: 10;
+}

@@ -15,8 +15,8 @@ import {
     ArrowRight,
     Sparkles
 } from "lucide-react"
-import { useState } from "react"
 import { InteractiveHeroButton } from "@/components/InteractiveHeroButton"
+import { HeroAnimation } from "@/components/HeroAnimation"
 
 // Animation variants
 const fadeInUp: Variants = {
@@ -164,20 +164,6 @@ function HeroSection() {
    INTERACTIVE DEMO SECTION
    ======================================== */
 function InteractiveDemo() {
-    const [selectedScenario, setSelectedScenario] = useState("software-engineer")
-    const [showResults, setShowResults] = useState(false)
-
-    const scenarios = [
-        { id: "software-engineer", label: "Software Engineer", match: 78 },
-        { id: "data-scientist", label: "Data Scientist", match: 65 },
-        { id: "product-manager", label: "Product Manager", match: 82 },
-    ]
-
-    const handleRunDemo = () => {
-        setShowResults(false)
-        setTimeout(() => setShowResults(true), 1500)
-    }
-
     return (
         <section id="demo" className="py-24 bg-muted/30">
             <div className="container px-4 lg:px-8">
@@ -192,8 +178,7 @@ function InteractiveDemo() {
                         See It In Action
                     </motion.h2>
                     <motion.p variants={fadeInUp} className="text-muted-foreground max-w-2xl mx-auto">
-                        Experience the power of our AI analysis without uploading anything.
-                        Try our demo with pre-loaded sample data.
+                        Watch how our AI analyzes resumes, detects skill gaps, and generates personalized learning roadmaps.
                     </motion.p>
                 </motion.div>
 
@@ -202,88 +187,10 @@ function InteractiveDemo() {
                     whileInView="visible"
                     viewport={{ once: true }}
                     variants={fadeInUp}
-                    className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto"
+                    className="max-w-4xl mx-auto"
                 >
-                    {/* Demo Video/Animation Side */}
                     <div className="relative rounded-2xl overflow-hidden bg-card border border-border shadow-strong">
-                        <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
-                            <div className="text-center p-8">
-                                <div className="w-20 h-20 rounded-full gradient-primary flex items-center justify-center mx-auto mb-4">
-                                    <Play className="h-8 w-8 text-white ml-1" />
-                                </div>
-                                <p className="text-muted-foreground">
-                                    Upload → Analyze → Results Flow
-                                </p>
-                            </div>
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent pointer-events-none" />
-                    </div>
-
-                    {/* Interactive Demo Panel */}
-                    <div className="rounded-2xl bg-card border border-border p-6 shadow-strong">
-                        <h3 className="text-xl font-semibold mb-6">Try it instantly</h3>
-
-                        {/* Scenario Selector */}
-                        <div className="mb-6">
-                            <label className="text-sm font-medium text-muted-foreground mb-2 block">
-                                Select a sample scenario
-                            </label>
-                            <div className="grid grid-cols-1 gap-2">
-                                {scenarios.map((scenario) => (
-                                    <button
-                                        key={scenario.id}
-                                        onClick={() => {
-                                            setSelectedScenario(scenario.id)
-                                            setShowResults(false)
-                                        }}
-                                        className={`p-3 rounded-lg border text-left transition-all ${selectedScenario === scenario.id
-                                            ? "border-primary bg-primary/5 text-primary"
-                                            : "border-border hover:border-primary/50"
-                                            }`}
-                                    >
-                                        <span className="font-medium">{scenario.label}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Run Demo Button */}
-                        <div className="mb-6">
-                            <InteractiveHeroButton variant="primary" size="md" fullWidth onClick={handleRunDemo}>
-                                Run Demo Analysis
-                            </InteractiveHeroButton>
-                        </div>
-
-                        {/* Results Preview */}
-                        {showResults && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="p-4 rounded-xl bg-accent/10 border border-accent/20"
-                            >
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-sm font-medium text-accent">Match Score</span>
-                                    <span className="text-2xl font-bold text-accent">
-                                        {scenarios.find(s => s.id === selectedScenario)?.match}%
-                                    </span>
-                                </div>
-                                <div className="h-2 rounded-full bg-accent/20 overflow-hidden">
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${scenarios.find(s => s.id === selectedScenario)?.match}%` }}
-                                        transition={{ duration: 0.8, ease: "easeOut" }}
-                                        className="h-full bg-accent rounded-full"
-                                    />
-                                </div>
-                                <Link
-                                    to="/app"
-                                    className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                                >
-                                    Try with your own resume
-                                    <ArrowRight className="h-4 w-4" />
-                                </Link>
-                            </motion.div>
-                        )}
+                        <HeroAnimation />
                     </div>
                 </motion.div>
             </div>
